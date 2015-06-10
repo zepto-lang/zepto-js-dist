@@ -111055,7 +111055,7 @@ var h$$a20 = h$strta("quasiquote");
 var h$$a21 = h$strta("unquote-splicing");
 var h$$a22 = h$strta("proper list");
 var h$$a23 = h$strta("unquote");
-var h$$a25 = h$strta("eval-string'");
+var h$$a25 = h$strta("eval-string");
 function h$$aZx()
 {
   h$bh();
@@ -141522,7 +141522,7 @@ function h$$bIy()
   h$l3(h$$bIF, b, h$baseZCGHCziBasezizpzp);
   return h$ap_2_2_fast();
 };
-var h$$mainZCMain_O = h$str("(eval-string' \"");
+var h$$mainZCMain_O = h$str("(eval-string \"");
 function h$$bIx()
 {
   var a = h$r1.d1;

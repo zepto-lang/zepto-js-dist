@@ -25256,7 +25256,7 @@ function Zepto(editor, res, dbg, stdlib) {
   this.code = null;
   this.result = document.getElementById(res);
   this.dbg = document.getElementById(dbg);
-  this.stdlib = document.getElementById(stdlib).innerHTML;
+  this.stdlib = document.getElementById(stdlib).stdlibData;
   this.editor = editor;
   var that = this;
   editor.keyBinding.origOnCommandKey = editor.keyBinding.onCommandKey;

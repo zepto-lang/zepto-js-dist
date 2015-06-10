@@ -64,30 +64,31 @@
               (if (null? (cdr (list var . step)))
                   (car (list var . step))
                   (cadr (list var . step))) ...)))))))
-(define (char-cmp? cmp a b) "compares two chars with a compare option cmp"
+
+(define (char-cmp? cmp a b)
      (cmp (char->integer a) (char->integer b)))
 
-(define (char-ci-cmp? cmp a b) "compares two chars case insensitive with a compare option cmp"
+(define (char-ci-cmp? cmp a b)
      (cmp (char->integer (char-lower-case a)) (char->integer (char-lower-case b)))) 
 
-(define (char=? a b) "are chars equal" (char-cmp? = a b))
-(define (char<? a b) "is char less than" (char-cmp? < a b))
-(define (char>? a b) "is char greater than" (char-cmp? > a b))
-(define (char<=? a b) "is char less than or equal to" (char-cmp? <= a b))
-(define (char>=? a b) "is char greater than or equal to" (char-cmp? >= a b))
-(define (char/=? a b) "is char not equal to" (char-cmp? /= a b))
+(define (char=? a b)  (char-cmp? = a b))
+(define (char<? a b)  (char-cmp? < a b))
+(define (char>? a b)  (char-cmp? > a b))
+(define (char<=? a b)  (char-cmp? <= a b))
+(define (char>=? a b)  (char-cmp? >= a b))
+(define (char/=? a b)  (char-cmp? /= a b))
 
-(define (char-ci=? a b) "are chars equal; case insensitive" 
+(define (char-ci=? a b)  
   (char-ci-cmp? = a b))
-(define (char-ci<? a b) "is char less than; case insensitive" 
+(define (char-ci<? a b)  
   (char-ci-cmp? < a b))
-(define (char-ci>? a b) "is char greater than; case insensitive" 
+(define (char-ci>? a b)  
   (char-ci-cmp? > a b))
-(define (char-ci<=? a b) "is char less than or equal to; case insensitive" 
+(define (char-ci<=? a b)  
   (char-ci-cmp? <= a b))
-(define (char-ci>=? a b) "is char greater than or equal to; case insensitive" 
+(define (char-ci>=? a b)  
   (char-ci-cmp? >= a b))
-(define (char-ci/=? a b) "is char not equal to; case insensitive" 
+(define (char-ci/=? a b)  
   (char-ci-cmp? /= a b))
 (define-syntax cond
     (syntax-rules (else =>)
@@ -191,17 +192,17 @@
                     (begin (set! result x)
                         (set! result-ready? #t)
                             result))))))))
-(define (read? x) "read from a file if it is an input file, else return #f"
+(define (read? x) 
   (if (input-port? x)
     (read x)
     #f))
 
-(define (write? x s) "write s to a file if it is an output file, else return #f"
+(define (write? x s) 
   (if (output-port? x)
     (write x s)
     #f))
 
-(define (call-with-input-file s p) "open an input file s and apply a function to it, then close the file"
+(define (call-with-input-file s p) 
      (let ((inport (open-input-file s)))
           (if (eq? inport #f)
                #f
@@ -209,7 +210,7 @@
                     (close-input-port inport)
                     res))))
 
-(define (call-with-output-file s p) "open an output file s and apply a function to it, then close the file"
+(define (call-with-output-file s p) 
      (let ((outport (open-output-file s)))
           (if (eq? outport #f)
                #f
@@ -217,7 +218,7 @@
                     (close-output-port outport)
                     res))))
 
-(define (with-input-from-file s p) "open an input file s and run a function while it's open"
+(define (with-input-from-file s p) 
      (let ((inport (open-input-file s)))
           (if (eq? inport #f)
                #f
@@ -228,7 +229,7 @@
                          (set-input-port prev-inport)
                          res)))))
 
-(define (with-output-to-file s p) "open an output file s and run a function while it's open"
+(define (with-output-to-file s p) 
      (let ((outport (open-output-file s)))
           (if (eq? outport #f)
                #f
@@ -239,11 +240,11 @@
                          (set-output-port prev-outport)
                          res)))))
 
-(define (and . lst) "logical and on multiple values" (fold && #t lst))
-(define (or . lst) "logical or on multiple values" (fold || #f lst))
-(define (nor . lst) "logical nor on multiple values" (fold (lambda (x y) (&& (not y) x))  #t lst))
+(define (and . lst)  (fold && #t lst))
+(define (or . lst)  (fold || #f lst))
+(define (nor . lst)  (fold (lambda (x y) (&& (not y) x))  #t lst))
 
-(define (not x) "logical not" (if x #f #t))
+(define (not x)  (if x #f #t))
 
 (define (ipow b e)
   (cond ((zero? e) 1)
@@ -335,62 +336,34 @@
     (do ((i 0 (+ i 1))) ((= i 256))
       (vector-set! t i (kiss))))))
 
-(define-syntax rng-assert
-  (syntax-rules ()
-    ((rng-assert expr result)
-      (if (not (equal? expr result))
-          (write
-            '("failed assertion: "
-              "expected " result
-              ", returned " expr))
-            (write "test successful.")))))
-
-(define (test-rng)
-  (let ((k 0))
-    (begin 
-    (settable 12345 65435 34221 12345 9983651 95746118)
-    (write "First test")
-    (do ((i 0 (+ i 1))) ((= i 1e6) (rng-assert k 1064612766)) (set! k (lfib4)))
-    (write "Second test")
-    (do ((i 0 (+ i 1))) ((= i 1e6) (rng-assert k  627749721)) (set! k (swb)))
-    (write "Third test")
-    (do ((i 0 (+ i 1))) ((= i 1e6) (rng-assert k 1372460312)) (set! k (kiss)))
-    (write "Fourth test")
-    (do ((i 0 (+ i 1))) ((= i 1e6) (rng-assert k 1529210297)) (set! k (cong)))
-    (write "Fifth test")
-    (do ((i 0 (+ i 1))) ((= i 1e6) (rng-assert k 2642725982)) (set! k (shr3)))
-    (write "Sixth test")
-    (do ((i 0 (+ i 1))) ((= i 1e6) (rng-assert k  904977562)) (set! k (mwc)))
-    (write "Seventh test")
-    (do ((i 0 (+ i 1))) ((= i 1e6) (rng-assert k 3519793928)) (set! k (fib))))))
 (define exact? integer?)
 (define pi 245850922/78256779)
 (define e 438351041/161260336)
-(define (inexact? x) "is inexact number" (and (real? x) (not (integer? x))))
-(define (even? n) "is even" (= (remainder n 2) 0))
-(define (odd? n) "is odd" (not (= (remainder n 2) 0)))
-(define (zero? n) "is zero" (= n 0))
-(define (positive? n) "is positive" (> n 0))
-(define (negative? n) "is negative" (< n 0))
+(define (inexact? x)  (and (real? x) (not (integer? x))))
+(define (even? n)  (= (remainder n 2) 0))
+(define (odd? n)  (not (= (remainder n 2) 0)))
+(define (zero? n)  (= n 0))
+(define (positive? n)  (> n 0))
+(define (negative? n)  (< n 0))
 (define complex? number?)
 (define (/. . l) (foldl (lambda (x y) (/ (exact->inexact x) y)) 1 l))
-(define (abs n) "absolute value of number" (if (>= n 0) n (- n)))
-(define (exact->inexact n) "make inexact number from exact" (* n 1.0))
-(define (integer->float n) "make float from integer" (* n 1.0))
-(define (<> n1 n2) "not equal" (not (= n1 n2)))
+(define (abs n)  (if (>= n 0) n (- n)))
+(define (exact->inexact n)  (* n 1.0))
+(define (integer->float n)  (* n 1.0))
+(define (<> n1 n2)  (not (= n1 n2)))
 
-(define (succ x) "next number" (+ x 1))
+(define (succ x)  (+ x 1))
 
-(define (pred x) "previous number" (- x 1))
+(define (pred x)  (- x 1))
 
-(define (gcd a b) "Greatest Common Divisor"
+(define (gcd a b) 
   (let ((aa (abs a))
     (bb (abs b)))
      (if (= bb 0)
           aa
           (gcd bb (remainder aa bb)))))
 
-(define (lcm a b) "Least Common Multiple"
+(define (lcm a b) 
      (if (or (= a 0) (= b 0))
           0
           (abs (* (quotient a (gcd a b)) b))))
@@ -430,49 +403,49 @@
         (begin (set! seed (modulo (+ (* seed a) c) m))))
       (/ seed m))))
 
-(define (randint . args) "generate a random integer between the given args(the lower range is optional)"
+(define (randint . args) 
   (cond ((= (length args) 1) (randint 0 (car args)))
         ((= (length args) 2)
          (+ (car args) (floor (* (random) (- (cadr args) (car args))))))
-        (else (write "usage: (randint [lo] hi)"))))
-(define (list . objs) "creates a list from objects"
+        (else :error)))
+(define (list . objs) 
   objs)
 
-(define (id obj) "returns an object"
+(define (id obj) 
   obj)
 
-(define (flip func) "flips two arguments for a function"
+(define (flip func) 
   (lambda (arg1 arg2)
     (func arg2 arg1)))
 
-(define (indexed-tail l k) "get tail of a list starting at index"
+(define (indexed-tail l k) 
     (if (zero? k)
       l
       (indexed-tail (cdr l) (- k 1))))
 
-(define (list-ref l k) "get reference to list element at certain point"
+(define (list-ref l k) 
     (car (indexed-tail l k)))
 
-(define (list-tail l) "get tail of a list"
+(define (list-tail l) 
   (cdr l))
 
-(define (append i a) "append something to a list"
+(define (append i a) 
     (foldr (lambda (ax ix) (cons ax ix)) a i))
 
-(define (curry func arg1) "curry a function"
+(define (curry func arg1) 
   (lambda (arg)
     (func arg1 arg)))
 
-(define (compose f g) "compose two functions"
+(define (compose f g) 
   (lambda (arg)
     (f (apply g arg))))
 
-(define (foldr func end l) "fold right"
+(define (foldr func end l) 
   (if (null? l)
     end
     (func (car l) (foldr func end (cdr l)))))
 
-(define (foldl func accum l) "fold left"
+(define (foldl func accum l) 
   (if (null? l)
     accum
     (foldl func (func accum (car l)) (cdr l))))
@@ -482,31 +455,31 @@
     (cons init '())
     (cons init (unfold func (func init) pred))))
 
-(define (sum . l) "sum of values"
+(define (sum . l) 
   (fold + 0 l))
 
-(define (product . l) "product of values"
+(define (product . l) 
   (fold * 1 l))
 
-(define (max first . l) "maximum of values"
+(define (max first . l) 
   (fold (lambda (old new)
                 (if (> old new) old new))
         first
         l))
 
-(define (min first . l) "minimum of values"
+(define (min first . l) 
   (fold (lambda (old new)
           (if (< old new) old new))
         first
         l))
 
-(define (length l) "length of list"
+(define (length l) 
   (fold (lambda (x y)
                 (+ x 1))
         0
         l))
 
-(define (reverse l) "reverse list"
+(define (reverse l) 
   (fold (flip cons) '() l))
 
 (define (my-mem-helper obj lst cmp-proc)
@@ -529,19 +502,19 @@
 
 (define (assoc obj alist) (fold (mem-helper (curry equal? obj) car) #f alist))
 
-(define (map func l) "map function to list"
+(define (map func l) 
   (foldr (lambda (x y)
            (cons (func x) y))
          '()
          l))
 
-(define (foreach func l) "apply function to each element on the list"
+(define (foreach func l) 
   (foldl (lambda (x y)
            (cons (func x) y))
          '()
          l))
 
-(define (filter pred l) "filter list through preidcate"
+(define (filter pred l) 
   (foldr (lambda (x y)
            (if (pred x)
                (cons x y)
@@ -549,7 +522,7 @@
          '()
          l))
 
-(define (any? pred lst) "does anything in the list satisfy the predicate?"
+(define (any? pred lst) 
   (let any* ((l (map pred lst)))
     (cond
       ((null? l) #f)
@@ -557,7 +530,7 @@
       (else
         (any* (cdr l))))))
 
-(define (every? pred lst) "do all values in the list satisfy the predicate?"
+(define (every? pred lst) 
   (let every* ((l (map pred lst)))
     (cond
       ((null? l) #t)
@@ -570,12 +543,12 @@
 
 (define (case x . cs) 
          if (== cs ())
-            ("No Case Found")
+            ()
             (if (== x (caar cs))  
                 (cadar cs) 
                 (unpack case (join (list x) (cdr cs)))))
 
-(define (iota n) "makes a list from numbers from 0 to n"
+(define (iota n) 
     (let ((acc '()))
       (do ((i 0 (+ i 1))) ((= i n)) (set! acc (append acc (list i)))) acc))
 
@@ -592,7 +565,7 @@
      (append cars (list car1))
      (append cdrs (list cdr1))))))
 
-(define (for-each proc . lists) "applies a function to a bunch of arguments"
+(define (for-each proc . lists) 
   (if (null? lists)
       (apply proc)
       (if (null? (car lists))
@@ -637,17 +610,7 @@
       ((complex? num) num)
       (else #f))))
 
-(define (string->boolean x)
-  (cond
-    ((string=? x "true") #t)
-    ((string=? x "false") #f)
-    (else :err)))
-(define (in? pred? l) "check whether there is an element in l that matches the predicate pred?"
-  (cond ((null? l) #f)
-  ((pred? (car l)) #t)
-  (else (in? pred? (cdr l)))))
-
-(define (list-index l el) "get index of el in l; otherwise get -1"
+(define (list-index l el) 
   (if (null? l)
     -1
     (if (eq? (car l) el)
@@ -665,14 +628,14 @@
 (define char-downcase char-lower-case)
 (define char-upcase char-upper-case)
 
-(define (ok? x) "is arg ok"
+(define (ok? x) 
   (eq? x :ok))
 
-(define (error? x) "is arg error"
+(define (error? x) 
   (eq? x :error))
 
-(define (yes? x) "is arg yes"
+(define (yes? x) 
   (eq? x :yes))
 
-(define (no? x) "is arg no"
+(define (no? x) 
   (eq? x :no))

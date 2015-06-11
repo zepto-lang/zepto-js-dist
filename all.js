@@ -25259,7 +25259,7 @@ function Zepto(editor, res, dbg, stdlib) {
   this.stdlib = document.getElementById(stdlib).stdlibData;
   this.editor = editor;
   var that = this;
-  editor.getSession.on("change", function() {
+  editor.getSession().on("change", function() {
     that.changed = true;
     var x;
     while(x = that.waiting.pop()) x();
